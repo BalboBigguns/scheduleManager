@@ -2,12 +2,14 @@ import wget
 import os
 import re
 import json
+import shutil
 
 url = ['http://ife.plany.p.lodz.pl/plany/4CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/4CS2.pdf',
        'http://ife.plany.p.lodz.pl/plany/2CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/2CS2.pdf']
 storedDataPath = 'data.json'
 data = {}
 workingDir = os.getcwd()
+desktop = os.path.expanduser("~/Desktop")
 
 
 print('Beginning file download with wget module')
@@ -50,6 +52,7 @@ else:
             print()
             print(c + ': New schedule found!!!')
             print('Date of publication: ' + t)
+            shutil.move(c + '.pdf', desktop + '\\' + c + '.pdf')
             newVersionFound = True
 
 
