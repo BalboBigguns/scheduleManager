@@ -9,6 +9,8 @@ sysInfo = platform.uname()
 
 if sysInfo[0] == 'Windows':
     from win10toast import ToastNotifier
+elif sysInfo[0] == 'Linux':
+    import notify2
 
 url = ['http://ife.plany.p.lodz.pl/plany/4CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/4CS2.pdf',
        'http://ife.plany.p.lodz.pl/plany/2CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/2CS2.pdf']
@@ -80,8 +82,11 @@ if newVersionFound:
         toaster.show_toast(
             "Schedule Manager",
             "New schedule has been found and it's waiting on your desktop",
-            duration=10,
             threaded=True)
+    elif sysInfo[0] == 'Linux':
+        notify2.init('Schedule Manager')
+        n = notify2.Notification('New schedule', 'Check out your desktop')
+        n.show()
 else:
     print()
     print('No changes have been found')
