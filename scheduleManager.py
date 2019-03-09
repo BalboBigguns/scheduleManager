@@ -3,6 +3,12 @@ import os
 import re
 import json
 import shutil
+import platform
+
+sysInfo = platform.uname()
+
+if sysInfo[0] == 'Windows':
+    from win10toast import ToastNotifier
 
 url = ['http://ife.plany.p.lodz.pl/plany/4CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/4CS2.pdf',
        'http://ife.plany.p.lodz.pl/plany/2CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/2CS2.pdf']
@@ -68,6 +74,14 @@ if newVersionFound:
         json.dump(data, f)
     print()
     print('Schedules updated')
+
+    if sysInfo[0] == 'Windows':
+        toaster = ToastNotifier()
+        toaster.show_toast(
+            "Schedule Manager",
+            "New schedule has been found and it's waiting on your desktop",
+            duration=10,
+            threaded=True)
 else:
     print()
     print('No changes have been found')
