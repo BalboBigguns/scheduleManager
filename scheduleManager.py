@@ -12,6 +12,10 @@ workingDir = os.getcwd()
 desktop = os.path.expanduser("~/Desktop")
 
 
+for f in os.listdir():
+    if f[-3:] == 'pdf':
+        os.remove(f)
+
 print('Beginning file download with wget module')
 
 for u in url:
@@ -22,7 +26,7 @@ for u in url:
     print('Processing ' + u[33:37] + ' schedule...')
 
     wget.download(u, outPDF)
-    os.system('pdf2txt.py -c utf-8 -o' + workingDir + '\\' + outTXT + ' ' + workingDir + '\\' + outPDF)
+    os.system('pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF)
 
     with open(outTXT, 'r', encoding='utf8') as f:
         data.update({u[33:37]:
@@ -38,6 +42,9 @@ if storedDataPath not in os.listdir():
     print()
     print('No previous updates have been found')
     newVersionFound = True
+    for f in os.listdir():
+        if f[-3:] == 'pdf':
+            shutil.move(f , desktop + '/' + f)
 else:
     print()
     print('Looking for changes...')
@@ -52,7 +59,7 @@ else:
             print()
             print(c + ': New schedule found!!!')
             print('Date of publication: ' + t)
-            shutil.move(c + '.pdf', desktop + '\\' + c + '.pdf')
+            shutil.move(c + '.pdf', desktop + '/' + c + '.pdf')
             newVersionFound = True
 
 
@@ -66,4 +73,4 @@ else:
     print('No changes have been found')
 
 print()
-input('Press a key to finish...')
+input('Press key to finish...')
