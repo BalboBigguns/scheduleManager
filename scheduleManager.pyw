@@ -5,7 +5,6 @@ import json
 import shutil
 import platform
 import sys
-import subprocess
 
 sysInfo = platform.uname()
 
@@ -40,11 +39,7 @@ for u in url:
     print('Processing ' + u[33:37] + ' schedule...')
 
     wget.download(u, outPDF)
-    #os.system('pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF)
-
-    si = subprocess.STARTUPINFO()
-    si.dwFlags = subprocess.CREATE_NO_WINDOW
-    subprocess.Popen(['pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF])
+    os.system('pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF)
 
     with open(outTXT, 'r', encoding='utf8') as f:
         data.update({u[33:37]:
