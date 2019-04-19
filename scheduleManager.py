@@ -37,9 +37,13 @@ for u in url:
     os.system('pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF)
 
     with open(outTXT, 'r', encoding='utf8') as f:
-        data.update({u[33:37]:
-                     re.findall('[0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]',
-                                f.read())[0]})
+        text = f.read()
+        match = re.findall('[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]', text)
+
+        if len(match) == 0:
+            match = re.findall('[0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]', text)
+
+        data.update({u[33:37]:match[0]})
 
     os.remove(outTXT)
 
