@@ -5,7 +5,6 @@ import json
 import shutil
 import platform
 import sys
-import subprocess
 
 sysInfo = platform.uname()
 
@@ -59,10 +58,10 @@ newVersionFound = False
 if storedDataPath not in os.listdir():
     print()
     print('No previous updates have been found')
-    newVersionFound = True
-    for f in os.listdir():
-        if f.endswith('pdf'):
-            shutil.move(f , os.path.join(desktop, f))
+    newVersionFound = True    
+    for c, t in data.items():
+        shutil.move(c + '.pdf', os.path.join(desktop, c + '_' + t.split(' ')[0].replace('/', '.') + '.pdf'))
+
 else:
     print()
     print('Looking for changes...')
@@ -77,7 +76,7 @@ else:
             print()
             print(c + ': New schedule found!!!')
             print('Date of publication: ' + t)
-            shutil.move(c + '.pdf', os.path.join(desktop, c + '.pdf'))
+            shutil.move(c + '.pdf', os.path.join(desktop, c + '_' + t.split(' ')[0].replace('/', '.') + '.pdf'))
             newVersionFound = True
 
 
