@@ -18,8 +18,8 @@ if len(sys.argv) > 1 and '-q' in sys.argv:
     t = open(os.devnull, 'w')
     sys.stdout = t
 
-url = ['http://ife.plany.p.lodz.pl/plany/4CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/4CS2.pdf',
-       'http://ife.plany.p.lodz.pl/plany/2CS1.pdf', 'http://ife.plany.p.lodz.pl/plany/2CS2.pdf']
+url = ['http://ife.plany.p.lodz.pl/plany/5CS1.pdf']
+
 storedDataPath = 'data.json'
 data = {}
 workingDir = os.getcwd()
@@ -27,36 +27,32 @@ desktop = os.path.expanduser("~/Desktop")
 
 
 for f in os.listdir():
-    if f[-3:] == 'pdf':
+    if f.endswith('pdf'):
         os.remove(f)
 
 print('Beginning file download with wget module')
 
 for u in url:
-    outPDF = u[33:]
-    outTXT = u[33:37] + '.txt'
+    outPDF = u.split('/')[-1]
+    groupName = outPDF.split('.')[0]
+    outTXT = groupName + '.txt'
 
     print()
-    print('Processing ' + u[33:37] + ' schedule...')
+    print('Processing ' + groupName + ' schedule...')
 
     wget.download(u, outPDF)
-    os.system('pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF)
-
-    #si = subprocess.STARTUPINFO()
-    #si.dwFlags = subprocess.CREATE_NO_WINDOW
-    #subprocess.Popen(['pdf2txt.py -c utf-8 -o' + workingDir + '/' + outTXT + ' ' + workingDir + '/' + outPDF])
+    os.system(os.path.join('pdf2txt.py -c utf-8 -o' + workingDir , outTXT + ' ' + workingDir, outPDF))
 
     with open(outTXT, 'r', encoding='utf8') as f:
         text = f.read()
         match = re.findall('[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]', text)
-		
+
         if len(match) == 0:
             match = re.findall('[0-3][0-9]/[0-1][0-9]/[0-9][0-9][0-9][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]', text)
-			
-        data.update({u[33:37]:match[0]})
+
+        data.update({groupName:match[0]})
 
     os.remove(outTXT)
-
 
 newVersionFound = False
 
@@ -65,8 +61,8 @@ if storedDataPath not in os.listdir():
     print('No previous updates have been found')
     newVersionFound = True
     for f in os.listdir():
-        if f[-3:] == 'pdf':
-            shutil.move(f , desktop + '/' + f)
+        if f.endswith('pdf'):
+            shutil.move(f , os.path.join(desktop, f))
 else:
     print()
     print('Looking for changes...')
@@ -81,7 +77,7 @@ else:
             print()
             print(c + ': New schedule found!!!')
             print('Date of publication: ' + t)
-            shutil.move(c + '.pdf', desktop + '/' + c + '.pdf')
+            shutil.move(c + '.pdf', os.path.join(desktop, c + '.pdf'))
             newVersionFound = True
 
 
@@ -108,4 +104,3 @@ else:
 if len(sys.argv) < 1 or '-q' not in sys.argv:
     print()
     input('Press key to finish...')
-
